@@ -2,37 +2,28 @@ import java.io.IOException;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         if (args.length != 2) {
-            System.out.println("Usage: java Main <data file> <k>");
+            System.out.println("Usage: java KMeans <csv_file> <k_value>");
             return;
         }
 
-        String filePath = args[0];
+        String fileName = args[0];
         int k = Integer.parseInt(args[1]);
 
-        DataReader dataReader = new DataReader();
-        dataReader.readData(filePath);
-        List<Point> points = dataReader.points;
-
-        ClusterManager clusterManager = new ClusterManager(points, k);
-        double prevE = 0;
-        int iteration = 0;
-
-        while (true) {
-            clusterManager.run();
-            double E = clusterManager.clusters.stream().mapToDouble(Cluster::calcE).sum();
-            System.out.println("Iteration: " + iteration + ", E: " + E);
-            if (E == prevE) {
-                break;
-            }
-            prevE = E;
-            iteration++;
-
-            if (iteration == 100) {
-                break;
-            }
-
+        try {
+            List<Point> points = DataReader.readCSV(fileName);
+            KMeans kMeans = new KMeans(points, k);
+            kMeans.initClusters();
+            kMeans.cluster();
+            kMeans.printClusters();
+        } catch (IOException e) {
+            System.out.println("Error reading the CSV file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid k value or CSV file format: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
         }
     }
 }
+
