@@ -41,7 +41,6 @@ public class KMeans {
         }
     }
 
-
     public Cluster findClosestCluster(Point point) {
         Cluster closest = null;
         double minDistance = Double.MAX_VALUE;
