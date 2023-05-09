@@ -15,30 +15,6 @@ public class Cluster {
         this.centroid = centroid;
     }
 
-    public void calcCentroid() {
-        String mostCommonLabel = findMostCommonLabel();
-        Point newCentroid = new Point(mostCommonLabel);
-        boolean end = false;
-        int j = 0;
-        int numVectors = points.get(0).getVectors().size();
-        while (!end) {
-            double centroidVector = 0;
-            for (Point point : points) {
-                List<Double> vectors = point.getVectors();
-                if (vectors.size() > j) {
-                    centroidVector += vectors.get(j);
-                }
-            }
-            centroidVector /= points.size();
-            newCentroid.addVector(centroidVector);
-            j++;
-            if (j == numVectors) {
-                end = true;
-            }
-        }
-        centroid = newCentroid;
-    }
-
     private String findMostCommonLabel() {
         Map<String, Integer> labelCount = new HashMap<>();
         for (Point point : points) {
@@ -63,11 +39,6 @@ public class Cluster {
 
     public void clearCluster(){
         points = new LinkedList<>();
-    }
-
-    public boolean isClusterChanged(){
-        double newE = calcE();
-        return E != newE;
     }
 
     public double calcE(){
